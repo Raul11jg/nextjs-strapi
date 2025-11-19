@@ -34,9 +34,9 @@ export function HeroSection({ data }: HeroSectionProps) {
   const imageUrl = image?.url ? "http://127.0.0.1:1337" + image.url : "";
 
   return (
-    <header className="relative h-[80vh] min-h-[600px] w-full overflow-hidden">
+    <header className="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
       {imageUrl && <Image alt={image?.alternativeText ?? "no alternative text"} className="absolute inset-0 -z-10 object-cover" src={imageUrl} fill priority unoptimized />}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60 -z-10" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black/60 -z-10" />
       <div className="container mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
         <h1 className="text-5xl font-extrabold tracking-tight md:text-7xl lg:text-8xl drop-shadow-lg">{title}</h1>
         <p className="mt-6 max-w-2xl text-lg font-medium md:text-2xl drop-shadow-md">{description}</p>
