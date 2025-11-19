@@ -3,6 +3,16 @@
 import { registerUser } from "@/lib/strapi";
 import { FormState, SignUpSchema } from "@/validations/auth";
 import { z } from "zod";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+const cookieConfig = {
+  maxAge: 60 * 60 * 24 * 7,
+  httpOnly: true, // only accessible by server
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  path: "/",
+} as const;
 
 export const signIn = async (formData: FormData) => {};
 
@@ -50,14 +60,13 @@ export const signUp = async (
 
   console.log("User registered successfully", response);
 
-  return {
-    success: true,
-    message: "User registered successfully",
-    strapiError: null,
-    isLoading: false,
-    zodError: null,
-    data: validatedFields.data,
-  };
+  const cookieStore = await cookies();
+  cookieStore.set("strapi-jwt", response.jwt, cookieConfig);
+  redirect("/dashboard");
 };
 
-export const signOut = async () => {};
+export const signOut = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("strapi-jwt");
+  redirect("/");
+};
