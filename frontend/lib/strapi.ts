@@ -65,15 +65,12 @@ export async function registerUser(userData: SignUpSchema) {
       },
       body: JSON.stringify(payload),
     });
-    console.log({ response });
-    if (!response.ok) {
-      throw new Error(`HTTP error, status: ${response.status}`);
-    }
+
     const data = await response.json();
     return data;
   } catch (err) {
     console.error(err);
-    return null;
+    return err;
   }
 }
 

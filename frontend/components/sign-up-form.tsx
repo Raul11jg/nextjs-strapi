@@ -109,6 +109,10 @@ export default function SignUpForm() {
         >
           Create account
         </SubmitButton>
+
+        {formState.strapiError && (
+          <p className="text-red-500">{formState.strapiError}</p>
+        )}
       </form>
     </div>
   );

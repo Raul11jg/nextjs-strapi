@@ -37,10 +37,11 @@ export const signUp = async (
   const response = await registerUser(fields);
 
   if (!response || response.error) {
+    console.log("User registration failed", response);
     return {
       success: false,
       message: "User registration failed",
-      strapiError: response?.error,
+      strapiError: response?.error.message,
       isLoading: false,
       zodError: null,
       data: fields,
