@@ -19,13 +19,14 @@ export const signUp = async (
   const validatedFields = SignUpSchema.safeParse(fields);
 
   if (!validatedFields.success) {
-    const formattedErrors = z.treeifyError(validatedFields.error);
+    const flattenedErrors = z.flattenError(validatedFields.error);
+    console.log("Validation failed", flattenedErrors.fieldErrors);
     return {
       success: false,
       message: "Validation failed",
       strapiError: null,
       isLoading: false,
-      zodError: formattedErrors,
+      zodError: flattenedErrors.fieldErrors,
       data: fields,
     };
   }

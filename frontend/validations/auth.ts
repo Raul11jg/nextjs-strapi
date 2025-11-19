@@ -18,15 +18,6 @@ export const SignInSchema = z.object({
 
 export type SignInSchema = z.infer<typeof SignInSchema>;
 
-type TreeifiedError = {
-  errors: string[];
-  properties?: {
-    [K in keyof SignUpSchema]?: {
-      errors: string[];
-    };
-  };
-};
-
 export type FormState = {
   data: {
     fullName: string;
@@ -35,7 +26,8 @@ export type FormState = {
     confirmPassword: string;
   };
   isLoading: boolean;
-  zodError: TreeifiedError | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  zodError: any;
   success: boolean;
   message: string;
   strapiError: string | null;

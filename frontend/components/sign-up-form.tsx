@@ -8,6 +8,7 @@ import PasswordInput from "@/components/ui/password-input";
 import SubmitButton from "@/components/ui/submit-button";
 import { actions } from "@/app/actions";
 import { FormState } from "@/validations/auth";
+import { FormError } from "./ui/form-error";
 
 const INITIAL_STATE: FormState = {
   success: false,
@@ -65,6 +66,7 @@ export default function SignUpForm() {
           required
           autoComplete="name"
         />
+        <FormError error={formState.zodError?.fullName} />
 
         <FormInput
           id="email"
@@ -93,32 +95,6 @@ export default function SignUpForm() {
           required
           autoComplete="new-password"
         />
-
-        <div className="text-sm">
-          <label className="flex items-start gap-2">
-            <input
-              type="checkbox"
-              required
-              className="border-border text-primary focus:ring-primary mt-0.5 h-4 w-4 rounded focus:ring-2 focus:ring-offset-2"
-            />
-            <span className="text-muted-foreground">
-              I agree to the{" "}
-              <a
-                href="#"
-                className="text-foreground font-medium hover:underline"
-              >
-                Terms of Service
-              </a>{" "}
-              and{" "}
-              <a
-                href="#"
-                className="text-foreground font-medium hover:underline"
-              >
-                Privacy Policy
-              </a>
-            </span>
-          </label>
-        </div>
 
         <SubmitButton
           isLoading={formState.isLoading}
