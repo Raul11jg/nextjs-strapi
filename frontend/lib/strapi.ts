@@ -23,6 +23,7 @@ const QUERY_HOME_PAGE = {
 };
 
 export async function getHomePage() {
+  "use cache";
   const query = qs.stringify(QUERY_HOME_PAGE, {
     encodeValuesOnly: true,
   });

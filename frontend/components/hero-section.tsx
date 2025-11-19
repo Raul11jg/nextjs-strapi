@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { STRAPI_BASE_URL } from "@/lib/strapi";
 
 interface ImageProps {
@@ -27,7 +26,6 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ data }: HeroSectionProps) {
-  console.log(data);
   if (!data) return null;
 
   const { title, description, image, headerLink } = data;
