@@ -1,5 +1,12 @@
 import SignInForm from "@/components/sign-in-form";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign In",
+  description:
+    "Sign in to your account to access exclusive features and content.",
+};
 
 export default function SignIn() {
   return (
