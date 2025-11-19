@@ -4,8 +4,6 @@ interface FormInputProps {
   type?: string;
   label: string;
   placeholder?: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   autoComplete?: string;
 }
@@ -16,8 +14,6 @@ export default function FormInput({
   type = "text",
   label,
   placeholder,
-  value,
-  onChange,
   required = false,
   autoComplete,
 }: FormInputProps) {
@@ -30,8 +26,6 @@ export default function FormInput({
         id={id}
         name={name || id}
         type={type}
-        value={value}
-        onChange={onChange}
         required={required}
         placeholder={placeholder}
         autoComplete={autoComplete}

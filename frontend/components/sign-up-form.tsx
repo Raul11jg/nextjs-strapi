@@ -1,31 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import SocialLoginButton from "@/components/ui/social-login-button";
 import FormDivider from "@/components/ui/form-divider";
 import FormInput from "@/components/ui/form-input";
 import PasswordInput from "@/components/ui/password-input";
 import SubmitButton from "@/components/ui/submit-button";
+import { actions } from "@/app/actions";
+
+const INITIAL_STATE = {
+  fields: {
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  },
+  isLoading: false,
+  error: null as string | null,
+};
 
 export default function SignUpForm() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    setIsLoading(true);
-    // TODO: Implement registration logic
-    setTimeout(() => setIsLoading(false), 1000);
-  };
+  const [formState, formAction] = useActionState(
+    actions.auth.signUp,
+    INITIAL_STATE
+  );
 
   const handleSocialLogin = (provider: string) => {
     // TODO: Implement social login
@@ -53,14 +51,13 @@ export default function SignUpForm() {
       <FormDivider />
 
       {/* Registration Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form action={formAction} className="space-y-4">
         <FormInput
           id="fullName"
           type="text"
+          name="fullName"
           label="Full Name"
           placeholder="John Doe"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
           required
           autoComplete="name"
         />
@@ -68,30 +65,27 @@ export default function SignUpForm() {
         <FormInput
           id="email"
           type="email"
+          name="email"
           label="Email"
           placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
         />
 
         <PasswordInput
           id="password"
+          name="password"
           label="Password"
           placeholder="Create a password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           required
           autoComplete="new-password"
         />
 
         <PasswordInput
           id="confirmPassword"
+          name="confirmPassword"
           label="Confirm Password"
           placeholder="Confirm your password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
           required
           autoComplete="new-password"
         />
@@ -122,7 +116,10 @@ export default function SignUpForm() {
           </label>
         </div>
 
-        <SubmitButton isLoading={isLoading} loadingText="Creating account...">
+        <SubmitButton
+          isLoading={formState.isLoading}
+          loadingText="Creating account..."
+        >
           Create account
         </SubmitButton>
       </form>
