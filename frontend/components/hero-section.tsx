@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { STRAPI_BASE_URL } from "@/lib/strapi";
 
 interface ImageProps {
   id: number;
@@ -30,21 +31,18 @@ export function HeroSection({ data }: HeroSectionProps) {
   if (!data) return null;
 
   const { title, description, image, headerLink } = data;
-  // TODO: Fix image URL for local development if needed (Strapi doesn't return full URL for local uploads usually)
-  const imageUrl = image?.url
-    ? "http://127.0.0.1:1337" + image.url
-    : "/hero-background.png";
+  const imageUrl = image?.url.startsWith("http")
+    ? image.url
+    : `${STRAPI_BASE_URL}${image.url}`;
 
   return (
     <header className="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
       {imageUrl && (
-        <Image
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
           alt={image?.alternativeText ?? "no alternative text"}
-          className="absolute inset-0 -z-10 object-cover"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
           src={imageUrl}
-          fill
-          priority
-          unoptimized
         />
       )}
       <div className="absolute inset-0 -z-10 bg-linear-to-b from-black/10 via-transparent to-black/60" />
