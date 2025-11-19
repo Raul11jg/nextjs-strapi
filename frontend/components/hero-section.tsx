@@ -19,7 +19,7 @@ interface HeroSectionProps {
     id: number;
     __component: string;
     title: string;
-    description: string;
+    subHeader: string;
     image: ImageProps;
     headerLink: LinkProps;
   };
@@ -28,7 +28,7 @@ interface HeroSectionProps {
 export function HeroSection({ data }: HeroSectionProps) {
   if (!data) return null;
 
-  const { title, description, image, headerLink } = data;
+  const { title, subHeader, image, headerLink } = data;
   const imageUrl = image?.url.startsWith("http")
     ? image.url
     : `${STRAPI_BASE_URL}${image.url}`;
@@ -49,7 +49,7 @@ export function HeroSection({ data }: HeroSectionProps) {
           {title}
         </h1>
         <p className="mt-6 max-w-2xl text-lg font-medium drop-shadow-md md:text-2xl">
-          {description}
+          {subHeader}
         </p>
         {headerLink && (
           <Link
