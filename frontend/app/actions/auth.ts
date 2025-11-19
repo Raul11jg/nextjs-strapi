@@ -1,37 +1,44 @@
 "use server";
 
-const initialSignUpState = {
-  fields: {
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  },
-  isLoading: false,
-  error: null as string | null,
-};
+import { FormState, SignUpSchema } from "@/validations/auth";
+import { z } from "zod";
 
 export const signIn = async (formData: FormData) => {};
 
 export const signUp = async (
-  prevState: typeof initialSignUpState,
+  prevState: FormState,
   formData: FormData
-) => {
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const fullName = formData.get("fullName");
-  const confirmPassword = formData.get("confirmPassword");
+): Promise<FormState> => {
+  const fields = {
+    email: (formData.get("email") as string) || "",
+    password: (formData.get("password") as string) || "",
+    fullName: (formData.get("fullName") as string) || "",
+    confirmPassword: (formData.get("confirmPassword") as string) || "",
+  };
 
-  console.log(email, password, fullName, confirmPassword);
+  const validatedFields = SignUpSchema.safeParse(fields);
+
+  if (!validatedFields.success) {
+    const formattedErrors = z.treeifyError(validatedFields.error);
+    return {
+      success: false,
+      message: "Validation failed",
+      strapiError: null,
+      isLoading: false,
+      zodError: formattedErrors,
+      data: fields,
+    };
+  }
+
+  console.log("Fields are valid", validatedFields.data);
+
   return {
-    fields: {
-      fullName: fullName as string,
-      email: email as string,
-      password: password as string,
-      confirmPassword: confirmPassword as string,
-    },
+    success: true,
+    message: "User registered successfully",
+    strapiError: null,
     isLoading: false,
-    error: null,
+    zodError: null,
+    data: validatedFields.data,
   };
 };
 

@@ -7,16 +7,20 @@ import FormInput from "@/components/ui/form-input";
 import PasswordInput from "@/components/ui/password-input";
 import SubmitButton from "@/components/ui/submit-button";
 import { actions } from "@/app/actions";
+import { FormState } from "@/validations/auth";
 
-const INITIAL_STATE = {
-  fields: {
+const INITIAL_STATE: FormState = {
+  success: false,
+  message: "",
+  strapiError: null,
+  isLoading: false,
+  zodError: null,
+  data: {
     fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
   },
-  isLoading: false,
-  error: null as string | null,
 };
 
 export default function SignUpForm() {
