@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { STRAPI_BASE_URL } from "@/lib/strapi";
 
 interface ImageProps {
@@ -37,12 +36,11 @@ export function HeroSection({ data }: HeroSectionProps) {
   return (
     <header className="relative z-0 h-[50vh] min-h-[400px] w-full overflow-hidden">
       {imageUrl && (
-        <Image
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
           alt={image?.alternativeText ?? "no alternative text"}
           className="absolute inset-0 -z-10 h-full w-full object-cover"
           src={imageUrl}
-          fill
-          priority
         />
       )}
       <div className="absolute inset-0 -z-10 bg-linear-to-b from-black/10 via-transparent to-black/60" />

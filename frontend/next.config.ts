@@ -17,20 +17,6 @@ const nextConfig: NextConfig = {
         port: "1337",
         pathname: "/uploads/**",
       },
-      // Add production Strapi URL if available
-      ...(process.env.STRAPI_BASE_URL
-        ? [
-            {
-              protocol: new URL(process.env.STRAPI_BASE_URL).protocol.replace(
-                ":",
-                ""
-              ) as "http" | "https",
-              hostname: new URL(process.env.STRAPI_BASE_URL).hostname,
-              port: new URL(process.env.STRAPI_BASE_URL).port,
-              pathname: "/uploads/**",
-            },
-          ]
-        : []),
     ],
   },
 };
