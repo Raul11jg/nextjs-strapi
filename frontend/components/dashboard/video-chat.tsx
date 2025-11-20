@@ -121,7 +121,7 @@ export function VideoChat({
         <button
           type="submit"
           disabled={formState.isLoading}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 flex h-full items-center rounded-lg px-4 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center self-end rounded-lg px-4 py-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {formState.isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />

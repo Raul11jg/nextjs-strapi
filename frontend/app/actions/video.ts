@@ -175,7 +175,7 @@ export async function submitQuestion(
       strapiError: null,
       isLoading: false,
       zodError: null,
-      data: { question: "" }, // Clear the question field
+      data: { question: fields.question }, // Return question to update UI
       answer: result.data.answer,
     };
   } catch (error) {
