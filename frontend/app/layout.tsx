@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Summarize Youtube",
     description: "Transcribe and summarize your YouTube videos with AI.",
-    url: process.env.NEXT_PUBLIC_APP_URL,
+    url: process.env.NEXT_PUBLIC_APP_URL || "/",
     siteName: "Summarize Youtube",
     locale: "en_US",
     type: "website",
@@ -45,7 +45,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Summarize Youtube",
-    url: process.env.NEXT_PUBLIC_APP_URL,
+    url: process.env.NEXT_PUBLIC_APP_URL || "/",
     description: "Transcribe and summarize your YouTube videos with AI.",
   };
 
