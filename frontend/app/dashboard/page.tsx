@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { STRAPI_BASE_URL } from "@/lib/strapi";
 import { VideoSubmitForm } from "@/components/dashboard/video-submit-form";
@@ -34,9 +35,52 @@ async function getUserVideos(): Promise<VideoSummary[]> {
   }
 }
 
-export default async function DashboardPage() {
+async function VideoList() {
   const videos = await getUserVideos();
 
+  if (videos.length === 0) {
+    return (
+      <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed bg-white p-12 text-center dark:bg-neutral-950">
+        <div className="bg-primary/10 text-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+          <Plus className="h-8 w-8" />
+        </div>
+        <h3 className="mb-2 text-lg font-semibold">No summaries yet</h3>
+        <p className="text-muted-foreground mb-4 max-w-sm text-sm">
+          Get started by pasting a YouTube URL above to create your first
+          AI-powered video summary.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h3 className="mb-4 text-lg font-semibold tracking-tight">
+        Recent Summaries
+      </h3>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {videos.map((video) => (
+          <VideoCard key={video.id} summary={video} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function VideoListSkeleton() {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={i}
+          className="h-[300px] animate-pulse rounded-xl bg-neutral-100 dark:bg-neutral-800"
+        />
+      ))}
+    </div>
+  );
+}
+
+export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -50,29 +94,9 @@ export default async function DashboardPage() {
 
       <VideoSubmitForm />
 
-      {videos.length === 0 ? (
-        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed bg-white p-12 text-center dark:bg-neutral-950">
-          <div className="bg-primary/10 text-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-            <Plus className="h-8 w-8" />
-          </div>
-          <h3 className="mb-2 text-lg font-semibold">No summaries yet</h3>
-          <p className="text-muted-foreground mb-4 max-w-sm text-sm">
-            Get started by pasting a YouTube URL above to create your first
-            AI-powered video summary.
-          </p>
-        </div>
-      ) : (
-        <div>
-          <h3 className="mb-4 text-lg font-semibold tracking-tight">
-            Recent Summaries
-          </h3>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {videos.map((video) => (
-              <VideoCard key={video.id} summary={video} />
-            ))}
-          </div>
-        </div>
-      )}
+      <Suspense fallback={<VideoListSkeleton />}>
+        <VideoList />
+      </Suspense>
     </div>
   );
 }
