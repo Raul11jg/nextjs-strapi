@@ -71,7 +71,7 @@ export default factories.createCoreController("api::video-question.video-questio
         },
       });
 
-      return ctx.ok({
+      return ctx.send({
         data: questionEntity,
         message: "Question answered successfully",
       });
@@ -114,6 +114,6 @@ export default factories.createCoreController("api::video-question.video-questio
       sort: { createdAt: "asc" },
     });
 
-    return ctx.ok({ data: entities });
+    return ctx.send({ data: entities });
   },
 }));
