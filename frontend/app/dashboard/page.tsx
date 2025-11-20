@@ -1,43 +1,102 @@
-import { FileText, Clock, MoreVertical } from "lucide-react";
+import { Suspense } from "react";
+import { cookies } from "next/headers";
+import { STRAPI_BASE_URL } from "@/lib/strapi";
+import { VideoSubmitForm } from "@/components/dashboard/video-submit-form";
+import { VideoCard } from "@/components/dashboard/video-card";
+import type { VideoSummary } from "@/validations/video";
+import { Plus } from "lucide-react";
+
+async function getUserVideos(): Promise<VideoSummary[]> {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("strapi-jwt")?.value;
+
+    if (!token) {
+      return [];
+    }
+
+    const response = await fetch(`${STRAPI_BASE_URL}/api/video-summaries`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store", // Don't cache to get real-time status updates
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch videos");
+      return [];
+    }
+
+    const result = await response.json();
+    return result.data || [];
+  } catch (error) {
+    console.error("Error fetching videos:", error);
+    return [];
+  }
+}
+
+async function VideoList() {
+  const videos = await getUserVideos();
+
+  if (videos.length === 0) {
+    return (
+      <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed bg-white p-12 text-center dark:bg-neutral-950">
+        <div className="bg-primary/10 text-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+          <Plus className="h-8 w-8" />
+        </div>
+        <h3 className="mb-2 text-lg font-semibold">No summaries yet</h3>
+        <p className="text-muted-foreground mb-4 max-w-sm text-sm">
+          Get started by pasting a YouTube URL above to create your first
+          AI-powered video summary.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h3 className="mb-4 text-lg font-semibold tracking-tight">
+        Recent Summaries
+      </h3>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {videos.map((video) => (
+          <VideoCard key={video.id} summary={video} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function VideoListSkeleton() {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={i}
+          className="h-[300px] animate-pulse rounded-xl bg-neutral-100 dark:bg-neutral-800"
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Overview</h2>
-        <p className="text-muted-foreground">
-          Here&apos;s what&apos;s happening with your summaries today.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Overview</h2>
+          <p className="text-muted-foreground">
+            Your video summaries and insights
+          </p>
+        </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Mock Data Cards TODO: Replace with real data */}
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="group relative rounded-xl border bg-white p-6 shadow-sm transition-all hover:shadow-md dark:bg-neutral-950"
-          >
-            <div className="mb-4 flex items-start justify-between">
-              <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-full">
-                <FileText className="h-5 w-5" />
-              </div>
-              <button className="text-muted-foreground hover:text-foreground">
-                <MoreVertical className="h-5 w-5" />
-              </button>
-            </div>
-            <h3 className="mb-2 leading-none font-semibold tracking-tight">
-              How to Build a SaaS
-            </h3>
-            <p className="text-muted-foreground mb-4 text-sm">
-              A comprehensive guide on building software as a service...
-            </p>
-            <div className="text-muted-foreground flex items-center text-xs">
-              <Clock className="mr-1 h-3 w-3" />
-              <span>2 mins ago</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <VideoSubmitForm />
+
+      <Suspense fallback={<VideoListSkeleton />}>
+        <VideoList />
+      </Suspense>
     </div>
   );
 }

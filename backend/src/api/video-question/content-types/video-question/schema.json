@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "video_questions",
+  "info": {
+    "singularName": "video-question",
+    "pluralName": "video-questions",
+    "displayName": "Video Question",
+    "description": "Q&A interactions for video summaries"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "question": {
+      "type": "text",
+      "required": true
+    },
+    "answer": {
+      "type": "text"
+    },
+    "videoSummary": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::video-summary.video-summary",
+      "inversedBy": "videoQuestions"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}
