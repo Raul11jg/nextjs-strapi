@@ -460,6 +460,102 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiVideoQuestionVideoQuestion
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'video_questions';
+  info: {
+    description: 'Q&A interactions for video summaries';
+    displayName: 'Video Question';
+    pluralName: 'video-questions';
+    singularName: 'video-question';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    answer: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::video-question.video-question'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    question: Schema.Attribute.Text & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    videoSummary: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::video-summary.video-summary'
+    >;
+  };
+}
+
+export interface ApiVideoSummaryVideoSummary
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'video_summaries';
+  info: {
+    description: 'YouTube video summaries with AI-generated transcripts and summaries';
+    displayName: 'Video Summary';
+    pluralName: 'video-summaries';
+    singularName: 'video-summary';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    duration: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    errorMessage: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::video-summary.video-summary'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<
+      ['processing', 'completed', 'failed']
+    > &
+      Schema.Attribute.DefaultTo<'processing'>;
+    summary: Schema.Attribute.Text;
+    thumbnail: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+    transcript: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    videoQuestions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::video-question.video-question'
+    >;
+    youtubeUrl: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    youtubeVideoId: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -971,6 +1067,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::home-page.home-page': ApiHomePageHomePage;
+      'api::video-question.video-question': ApiVideoQuestionVideoQuestion;
+      'api::video-summary.video-summary': ApiVideoSummaryVideoSummary;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
