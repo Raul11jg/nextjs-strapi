@@ -3,7 +3,12 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import ffmpegPath from "ffmpeg-static";
-import ffprobePath from "ffprobe-static";
+import ffprobeStatic from "ffprobe-static";
+
+const ffprobePath = ffprobeStatic.path;
+
+// yt-dlp expects the directory containing ffmpeg/ffprobe, not the full path to the executable
+const ffmpegDir = ffmpegPath ? path.dirname(ffmpegPath) : null;
 
 export interface VideoMetadata {
   videoId: string;
@@ -53,13 +58,13 @@ class YouTubeServiceImpl implements YouTubeService {
   async getVideoMetadata(videoId: string): Promise<VideoMetadata> {
     try {
       const videoURL = `https://www.youtube.com/watch?v=${videoId}`;
+
       const output = await youtubedl(videoURL, {
         dumpSingleJson: true,
         noWarnings: true,
         noCheckCertificates: true,
         preferFreeFormats: true,
         youtubeSkipDashManifest: true,
-        ffmpegLocation: ffmpegPath as string,
       });
 
       // output is typed as any by the library, but contains the JSON metadata
@@ -87,16 +92,18 @@ class YouTubeServiceImpl implements YouTubeService {
 
       // Create a temporary file path
       const tempDir = os.tmpdir();
-      const tempFilePath = path.join(tempDir, `${videoId}-${Date.now()}.mp3`);
+      const tempFilePath = path.join(tempDir, `${videoId}-${Date.now()}.webm`);
 
-      // Download audio using youtube-dl-exec
+      console.log("Downloading audio for video:", videoId);
+      console.log("Temp file path:", tempFilePath);
+
+      // Download audio-only format directly without conversion
+      // This avoids needing ffmpeg for post-processing
       await youtubedl(videoURL, {
-        extractAudio: true,
-        audioFormat: "mp3",
+        format: "bestaudio",
         output: tempFilePath,
         noWarnings: true,
         noCheckCertificates: true,
-        ffmpegLocation: ffmpegPath as string,
       });
 
       // Read the file into a buffer
