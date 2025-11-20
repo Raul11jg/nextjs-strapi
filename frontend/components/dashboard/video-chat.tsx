@@ -116,6 +116,12 @@ export function VideoChat({
           rows={2}
           placeholder="Ask a question about this video..."
           disabled={formState.isLoading}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              formRef.current?.requestSubmit();
+            }
+          }}
           className="focus:ring-primary flex-1 resize-none rounded-lg border px-4 py-2 text-sm focus:ring-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
         />
         <button

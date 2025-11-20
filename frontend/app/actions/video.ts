@@ -87,7 +87,7 @@ export async function processVideo(
       data: fields,
       videoSummary: result.data,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "Network error",
@@ -178,7 +178,7 @@ export async function submitQuestion(
       data: { question: fields.question }, // Return question to update UI
       answer: result.data.answer,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "Network error",
