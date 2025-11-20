@@ -103,9 +103,5 @@ export function VideoCard({ summary }: VideoCardProps) {
     </div>
   );
 
-  if (summary.status === "processing" || summary.status === "failed") {
-    return cardContent;
-  }
-
   return <Link href={`/dashboard/summaries/${summary.id}`}>{cardContent}</Link>;
 }

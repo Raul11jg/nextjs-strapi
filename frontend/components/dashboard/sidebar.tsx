@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LayoutDashboard, FileText, Settings, X } from "lucide-react";
 import { YoutubeSummary3D } from "@/components/icons/youtube-summary-3d";
 
@@ -16,6 +17,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
+  const pathname = usePathname();
   return (
     <>
       {/* Mobile overlay */}
@@ -64,17 +66,28 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-4">
           <nav className="space-y-1 px-2">
-            {sidebarLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={onClose}
-                className="group text-muted-foreground hover:text-foreground flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-neutral-200 dark:hover:bg-neutral-800"
-              >
-                <link.icon className="mr-3 h-5 w-5 flex-shrink-0" />
-                {link.name}
-              </Link>
-            ))}
+            {sidebarLinks.map((link) => {
+              const isActive =
+                link.href === "/dashboard"
+                  ? pathname === "/dashboard"
+                  : pathname.startsWith(link.href);
+
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={onClose}
+                  className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+                    isActive
+                      ? "text-foreground bg-neutral-200 dark:bg-neutral-800"
+                      : "text-muted-foreground hover:text-foreground hover:bg-neutral-200 dark:hover:bg-neutral-800"
+                  }`}
+                >
+                  <link.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                  {link.name}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
